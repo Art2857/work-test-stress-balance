@@ -1,0 +1,33 @@
+config:
+  target: 'http://localhost:3000'
+  http:
+    timeout: 10000
+    pool: 200
+    maxSockets: 2000
+    keepAlive: true
+    maxFreeSockets: 1000
+  phases:
+    - duration: 1
+      arrivalCount: 10000
+      name: 'Balance Test - 10k concurrent requests'
+
+scenarios:
+  - name: 'Balance Withdrawal Test'
+    weight: 100
+    flow:
+      - post:
+          url: '/api/users/balance'
+          json:
+            userId: 1
+            amount: -2
+          capture:
+            - json: '$.success'
+              as: 'success'
+            - json: '$.balance'
+              as: 'balance'
+            - json: '$.error'
+              as: 'error'
+          expect:
+            - or:
+                - statusCode: 200
+                - statusCode: 400

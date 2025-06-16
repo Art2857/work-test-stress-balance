@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: balance_management_postgres_dev
+    environment:
+      POSTGRES_DB: webapp_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    command: >
+      postgres
+      -c max_connections=1000
+      -c shared_buffers=1GB
+      -c effective_cache_size=3GB
+      -c work_mem=8MB
+      -c maintenance_work_mem=256MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=32MB
+      -c max_wal_size=2GB
+      -c min_wal_size=512MB
+      -c effective_io_concurrency=200
+      -c random_page_cost=1.1
+      -c tcp_keepalives_idle=300
+      -c tcp_keepalives_interval=30
+      -c tcp_keepalives_count=3
+      -c deadlock_timeout=1s
+      -c lock_timeout=5s
+      -c statement_timeout=30s
+      -c log_min_duration_statement=1000
+      -c log_connections=off
+      -c log_disconnections=off
+      -c log_statement=none
+      -c synchronous_commit=off
+      -c fsync=on
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+volumes:
+  postgres_data_dev: 
