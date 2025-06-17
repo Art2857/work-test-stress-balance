@@ -1,6 +1,4 @@
-export * from './use-cases/update-balance.usecase';
-export * from './use-cases/set-balance.usecase';
-export * from './use-cases/get-balance.usecase';
+export * from './services/user.service';
 
 export { User } from './domain/user.entity';
 export * from './domain/user.errors';

@@ -2,8 +2,6 @@
   "name": "express-load-test",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/main.js",
     "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "dev:watch": "nodemon --exec ts-node src/main.ts",
     "test:load": "npx artillery run tests/artillery.yml",
@@ -16,7 +14,10 @@
     "migrate": "npx ts-node src/infrastructure/database/migrate.ts up",
     "migrate:up": "npx ts-node src/infrastructure/database/migrate.ts up",
     "migrate:down": "npx ts-node src/infrastructure/database/migrate.ts down",
-    "migrate:status": "npx ts-node src/infrastructure/database/migrate.ts status"
+    "migrate:status": "npx ts-node src/infrastructure/database/migrate.ts status",
+    "cron:test": "curl -s http://localhost:8080/api/cron/jobs | jq .",
+    "cron:stats": "curl -s http://localhost:8080/api/cron/stats | jq .",
+    "cron:servers": "curl -s http://localhost:8080/api/cron/servers | jq ."
   },
   "dependencies": {
     "dotenv": "^16.5.0",

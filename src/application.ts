@@ -3,6 +3,8 @@ import swaggerUi from 'swagger-ui-express';
 import { connectToDatabase, runMigrations } from './infrastructure';
 import { createUserRoutes } from './modules/user';
 import { createUserModuleWithDependencies } from './modules/user/user.factory';
+import { createCronRoutes } from './modules/cron';
+import { createCronModuleWithDependencies } from './modules/cron/cron.factory';
 import { swaggerSpec } from './shared/docs/swagger.config';
 import { errorHandler } from './shared/middleware/error-handler.middleware';
 import { config } from './config';
@@ -49,12 +51,22 @@ export async function createApplication() {
   const { userController: userBalanceController } =
     createUserModuleWithDependencies();
 
+  const { cronController, cronService } = createCronModuleWithDependencies();
+
+  await cronService.start();
+
   app.use('/api', createUserRoutes(userBalanceController));
+  app.use('/api/cron', createCronRoutes(cronController));
 
   app.get('/health', (req, res) => {
     res.json({
       status: 'OK',
       timestamp: new Date().toISOString(),
+      serverId: cronService.getServerId(),
+      cronService: {
+        isRunning: cronService.isServiceRunning(),
+        activeJobs: cronService.getActiveJobsCount(),
+      },
     });
   });
 

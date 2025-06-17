@@ -1,15 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { UpdateBalanceUseCase } from '../use-cases/update-balance.usecase';
-import { SetBalanceUseCase } from '../use-cases/set-balance.usecase';
-import { GetBalanceUseCase } from '../use-cases/get-balance.usecase';
+import { UserService } from '../services/user.service';
 import { UpdateBalanceResponse, GetBalanceResponse } from './user.validation';
 
 export class UserController {
-  constructor(
-    private readonly updateBalanceUseCase: UpdateBalanceUseCase,
-    private readonly setBalanceUseCase: SetBalanceUseCase,
-    private readonly getBalanceUseCase: GetBalanceUseCase
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async updateUserBalance(
     req: Request,
@@ -19,10 +13,10 @@ export class UserController {
     try {
       const { userId, amount } = req.validatedBody;
 
-      const balanceUpdateResult = await this.updateBalanceUseCase.execute({
+      const balanceUpdateResult = await this.userService.updateBalance(
         userId,
-        amount,
-      });
+        amount
+      );
 
       const successResponse: UpdateBalanceResponse = {
         success: true,
@@ -44,10 +38,10 @@ export class UserController {
     try {
       const { userId, balance } = req.validatedBody;
 
-      const balanceSetResult = await this.setBalanceUseCase.execute({
+      const balanceSetResult = await this.userService.setBalance(
         userId,
-        balance,
-      });
+        balance
+      );
 
       const successResponse: UpdateBalanceResponse = {
         success: true,
@@ -69,7 +63,7 @@ export class UserController {
     try {
       const { userId } = req.validatedParams;
 
-      const userBalanceData = await this.getBalanceUseCase.execute({ userId });
+      const userBalanceData = await this.userService.getBalance(userId);
 
       const balanceResponse: GetBalanceResponse = {
         userId: userBalanceData.userId,

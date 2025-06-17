@@ -172,7 +172,11 @@ const options: Options = {
       },
     },
   },
-  apis: ['./src/modules/user/api/*.ts', './src/application.ts'],
+  apis: [
+    './src/modules/user/api/*.ts',
+    './src/modules/cron/api/*.ts',
+    './src/application.ts',
+  ],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
