@@ -10,7 +10,7 @@ const environmentSchema = z.object({
   DATABASE_URL: z
     .string()
     .url()
-    .default('postgresql:
+    .default('postgresql://postgres:postgres@localhost:5433/webapp_test'),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
     .transform(val => val === 'true')
@@ -71,5 +71,5 @@ export const config = {
 };
 
 export function getApiUrl(): string {
-  return `http:
+  return `http://localhost:${config.server.port}`;
 }
